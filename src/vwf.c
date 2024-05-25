@@ -1,16 +1,5 @@
 #include "vwf.h"
 
-#if defined(NINTENDO)
-#define VWF_DEFAULT_BASE_ADDRESS 0x9800
-#define DEVICE_TILE_SIZE_BITS 4
-#elif defined(SEGA)
-#define VWF_DEFAULT_BASE_ADDRESS 0x7800
-#define DEVICE_TILE_SIZE_BITS 5
-#endif
-#define DEVICE_TILE_WIDTH 8u
-#define DEVICE_TILE_SIZE (1 << DEVICE_TILE_SIZE_BITS)
-#define VWF_TILE_SIZE 8u
-
 vwf_farptr_t vwf_fonts[4];
 
 uint8_t vwf_current_offset = 0;
