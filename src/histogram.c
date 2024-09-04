@@ -7,6 +7,10 @@
 #include "systemhelpers.h"
 #include "state_camera.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 #define XY2PTR(X,Y) (last_seen + ((Y) * 16 * 16) + (X * 16))
 
 static const uint8_t * const histogram_points_center[] = {
@@ -106,7 +110,7 @@ uint16_t calculate_tile(uint8_t * data) NAKED {
 }
 
 int16_t calculate_histogram(autoexp_area_e area) BANKED {
-    SWITCH_RAM(CAMERA_BANK_LAST_SEEN);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_LAST_SEEN);
     static uint16_t histogram;
     histogram = 0;
     for (uint8_t i = LENGTH(histogram_points_center), * const * ptr = histogram_areas[area]; i != 0; i--) histogram += calculate_tile(*ptr++);

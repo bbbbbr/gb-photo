@@ -5,7 +5,15 @@
 #include "sfxplayer.h"
 
 #if defined(NINTENDO)
-#include "hUGEDriver.h"
+    #if defined(MEGADUCK)
+        // TODO
+    #else
+        #include "hUGEDriver.h"
+    #endif
+#endif
+
+#if defined(NINTENDO)
+#include "override_mbc.h"
 #endif
 
 volatile uint8_t music_current_track_bank = MUSIC_STOP_BANK;
@@ -17,6 +25,11 @@ volatile uint8_t music_sfx_priority = MUSIC_SFX_PRIORITY_MINIMAL;
 uint8_t music_tick_mask = MUSIC_TICK_MASK_256HZ;
 
 void music_play_isr(void) NONBANKED {
+
+#if defined(MEGADUCK)
+    // Temporary - would need to use patched megaduck driver
+#else
+
     if (sfx_play_bank != SFX_STOP_BANK) {
 #if defined(NINTENDO)
         hUGE_mute_mask = music_mute_mask;
@@ -37,7 +50,7 @@ void music_play_isr(void) NONBANKED {
     if (music_current_track_bank == MUSIC_STOP_BANK) return;
     if (++music_play_isr_counter & music_tick_mask) return;
     uint8_t save_bank = _current_bank;
-    SWITCH_ROM(music_current_track_bank);
+    SWITCH_ROM_FORCE_MBC3(music_current_track_bank);
     if (music_next_track) {
         music_sound_cut();
 #if defined(NINTENDO)
@@ -49,7 +62,9 @@ void music_play_isr(void) NONBANKED {
         hUGE_dosound();
 #endif
     }
-    SWITCH_ROM(save_bank);
+    SWITCH_ROM_FORCE_MBC3(save_bank);
+
+#endif
 }
 
 void music_pause(uint8_t pause) {

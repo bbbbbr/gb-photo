@@ -48,6 +48,10 @@
 #include "flasher_folder_full.h"
 #include "flasher_folder_empty.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 BANKREF(state_flasher)
 
 static enum brows_mode_e browse_mode = browse_mode_folders;
@@ -138,7 +142,7 @@ uint8_t flash_erase_slot(uint8_t slot) {
 void flasher_load_gallery_from_slot(uint8_t slot) {
     uint8_t slot_bank = slot_to_sector(slot, 0);
     for (uint8_t image_index = 0; image_index != CAMERA_MAX_IMAGE_SLOTS; image_index++) {
-        SWITCH_RAM((image_index >> 1) + 1);
+        SWITCH_RAM_FORCE_MBC3((image_index >> 1) + 1);
         banked_memcpy(((image_index & 1) ? image_second : image_first),
                       (uint8_t *)picture_addr[image_index & 0x03],
                       CAMERA_IMAGE_SIZE,
@@ -163,7 +167,7 @@ uint8_t flasher_restore_image(uint8_t image_no) {
         uint8_t image_slot = VECTOR_POP(free_slots);
         protected_modify_slot(image_slot, n_images);
         // copy image data
-        SWITCH_RAM((image_slot >> 1) + 1);
+        SWITCH_RAM_FORCE_MBC3((image_slot >> 1) + 1);
         banked_memcpy(((image_slot & 1) ? image_second : image_first),
                       (uint8_t *)picture_addr[image_index & 0x03],
                       CAMERA_IMAGE_SIZE,

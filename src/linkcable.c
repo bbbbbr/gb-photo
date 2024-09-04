@@ -8,6 +8,10 @@
 
 #include "linkcable.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 // 0b10000011 - start, CGB double speed, internal clock
 #define START_TRANSFER_FAST 0x83
 
@@ -45,7 +49,7 @@ lbl:
         push af
         ld a, c
         ldh (__current_bank), a
-        ld (_rROMB0), a
+        ld (_rROMB0_LOCAL), a
 
         ld hl, #_SC_REG
         .SIO_WAIT
@@ -69,7 +73,7 @@ lbl:
 
         pop af
         ldh (__current_bank), a
-        ld (_rROMB0), a
+        ld (_rROMB0_LOCAL), a
 
         ret
     __endasm;
@@ -84,7 +88,7 @@ uint8_t linkcable_transfer_reset(void) BANKED {
 }
 
 uint8_t linkcable_transfer_image(const uint8_t * image, uint8_t image_bank) BANKED {
-    SWITCH_RAM(image_bank & 0x0f);
+    SWITCH_RAM_FORCE_MBC3(image_bank & 0x0f);
     LINK_SEND_COMMAND(LNK_DATA_HDR);
     linkcable_send_block(image, image_bank);
     LINK_SEND_COMMAND(LNK_DATA_FTR);

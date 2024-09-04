@@ -10,6 +10,10 @@
 #include "systemdetect.h"
 #include "systemhelpers.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 #define TO_EXPOSURE_VALUE(A) ((uint16_t)((A) >> 4))
 #define FROM_EXPOSURE_VALUE(A) (((uint32_t)(A)) << 4)
 
@@ -179,7 +183,7 @@ inline void set_image_refresh_dalay(uint8_t delay) {
     camera_PnR_delay = delay;
 }
 inline bool image_is_capturing(void) {
-    SWITCH_RAM(CAMERA_BANK_REGISTERS);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_REGISTERS);
     return ((camera_PnR_delay) || (CAM_REG_CAPTURE & CAM00F_CAPTURING));
 }
 

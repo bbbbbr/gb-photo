@@ -11,6 +11,10 @@
 #include "load_save.h"
 #include "histogram.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 BANKREF(module_load_save)
 
 #define LOAD_SAVE_OFFSET (0xC000 - sizeof(save_structure_t))
@@ -66,25 +70,25 @@ const camera_mode_settings_t default_camera_mode_settings[N_CAMERA_MODES] = {
 };
 
 inline void save_wait_sram(void) {
-    SWITCH_RAM(CAMERA_BANK_REGISTERS);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_REGISTERS);
     while (CAM_REG_CAPTURE & CAM00F_CAPTURING);
 }
 
 void save_camera_mode_settings(camera_mode_e mode) BANKED {
     save_wait_sram();
-    SWITCH_RAM(LOAD_SAVE_DATA_BANK);
+    SWITCH_RAM_FORCE_MBC3(LOAD_SAVE_DATA_BANK);
     save_structure.mode_settings[mode] = current_settings[mode];
 }
 
 void restore_default_mode_settings(camera_mode_e mode) BANKED {
     save_wait_sram();
-    SWITCH_RAM(LOAD_SAVE_DATA_BANK);
+    SWITCH_RAM_FORCE_MBC3(LOAD_SAVE_DATA_BANK);
     current_settings[mode] = save_structure.mode_settings[mode] = default_camera_mode_settings[mode];
 }
 
 void save_camera_state(void) BANKED {
     save_wait_sram();
-    SWITCH_RAM(LOAD_SAVE_DATA_BANK);
+    SWITCH_RAM_FORCE_MBC3(LOAD_SAVE_DATA_BANK);
     save_structure.state_options = camera_state;
 }
 
@@ -93,7 +97,7 @@ bool camera_settings_reset = false;
 // enable battery backed-up SRAM and load/initialize program settings
 uint8_t INIT_module_load_save(void) BANKED {
     ENABLE_RAM;
-    SWITCH_RAM(LOAD_SAVE_DATA_BANK);
+    SWITCH_RAM_FORCE_MBC3(LOAD_SAVE_DATA_BANK);
     // check for the valid save blob and initialize with defaults if fail
     if (save_structure.MAGIC != MAGIC_VALUE) {
         save_structure.MAGIC = MAGIC_VALUE;

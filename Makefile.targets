@@ -28,6 +28,10 @@ pocket-clean:
 pocket:
 	${MAKE} build-target PORT=$(GBCPU) PLAT=ap EXT=pocket
 
+megaduck-clean:
+	${MAKE} clean-target EXT=duck
+megaduck:
+	${MAKE} build-target PORT=$(GBCPU) PLAT=duck EXT=duck
 
 sms-clean:
 	${MAKE} clean-target EXT=sms
@@ -39,4 +43,6 @@ gg-clean:
 	${MAKE} clean-target EXT=gg
 gg:
 	${MAKE} build-target PORT=z80 PLAT=gg EXT=gg
+
+
 

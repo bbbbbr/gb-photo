@@ -9,11 +9,15 @@
 #include "cursors.h"
 #include "scrollers.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 scrollbar_t * scrollbars = NULL;
 
 uint8_t scrollbar_render_all(uint8_t hiwater) NONBANKED {
     uint8_t save = _current_bank, hw = hiwater;
-    SWITCH_ROM(BANK(cursors));
+    SWITCH_ROM_FORCE_MBC3(BANK(cursors));
     scrollbar_t * current = scrollbars;
     while (current) {
         hw += move_metasprite(cursors_metasprites[1], (0x80 - cursors_TILE_COUNT), hw,
@@ -21,7 +25,7 @@ uint8_t scrollbar_render_all(uint8_t hiwater) NONBANKED {
                               ((current->vertical) ? ((current->y << 3) + current->position + 8) : (current->y << 3)));
         current = current->prev;
     }
-    SWITCH_ROM(save);
+    SWITCH_ROM_FORCE_MBC3(save);
     return hw;
 }
 

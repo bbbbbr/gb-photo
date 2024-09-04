@@ -12,6 +12,10 @@
 
 #include "GBDK2020.h"   // logos must be compiled into the same bank
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 #define LENGTH(a) (sizeof((a))/sizeof((a)[0]))
 
 #define WIDTH(a) (a ## _WIDTH / a ## _TILE_W)
@@ -188,7 +192,7 @@ void logo_init(void) {
 
 uint8_t INIT_module_splash(void) BANKED {
     // skip logo if fast boot
-    SWITCH_RAM(CAMERA_BANK_REGISTERS);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_REGISTERS);
     if (OPTION(boot_to_camera_mode)) return 0;
     // show logo
     logo_init();

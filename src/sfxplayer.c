@@ -3,6 +3,10 @@
 
 #include "sfxplayer.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 volatile uint8_t sfx_play_bank = SFX_STOP_BANK;
 const uint8_t * sfx_play_sample = NULL;
 uint8_t sfx_frame_skip;
@@ -44,7 +48,7 @@ lbl:
         ret z                       ; return FALSE
         dec a
         ldh (__current_bank), a
-        ld (_rROMB0), a
+        ld (_rROMB0_LOCAL), a
 
         ld d, #0x0f
         ld a, (hl)
@@ -128,7 +132,7 @@ lbl:
 
         ld a, e                     ; restore bank
         ldh (__current_bank), a
-        ld (_rROMB0), a
+        ld (_rROMB0_LOCAL), a
 
         ld a, d                     ; result in a
 

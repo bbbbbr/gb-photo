@@ -7,6 +7,10 @@
 
 #include <string.h>
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 #pragma bank 255
 
 // TODO: OPTIONAL: programatic exposure stepping
@@ -122,7 +126,7 @@ static bool slitscan_check_motion_trigger(void) {
     uint16_t line_diff_pixel_count = 0u;
 
     // Calculate number of different pixels for the scanline
-    SWITCH_RAM(CAMERA_BANK_LAST_SEEN);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_LAST_SEEN);
     for (uint8_t tile_col = 0; tile_col < CAMERA_IMAGE_TILE_WIDTH; tile_col++) {
         line_diff_pixel_count += count_diff_bits(*src_addr++, *ref_addr++);
         line_diff_pixel_count += count_diff_bits(*src_addr,   *ref_addr) << 1; // Second bitplane
@@ -152,7 +156,7 @@ static void slitscan_copy_and_display_line_horiz(void) {
           uint8_t * dest_addr = dest_addr_slitscan;
           uint8_t * disp_addr = display_addr;
 
-    SWITCH_RAM(CAMERA_BANK_LAST_SEEN);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_LAST_SEEN);
 
     // Loop through one scanline row on the source camera image copying to the scanline image
     // Two bytes per line tile entry in 2bpp mode

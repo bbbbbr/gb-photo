@@ -6,10 +6,15 @@
 
 #include "sfxplayer.h"
 #if defined(NINTENDO)
-#include "hUGEDriver.h"
-#define MUSIC_MODULE hUGESong_t
+    #if defined(MEGADUCK)
+        // TODO
+        #define MUSIC_MODULE void
+    #else
+        #include "hUGEDriver.h"
+        #define MUSIC_MODULE hUGESong_t
+    #endif
 #else
-#define MUSIC_MODULE void
+    #define MUSIC_MODULE void
 #endif
 
 // SFX priority constants: concurrent effect will play only if its priority level is higher or equal

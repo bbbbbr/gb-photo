@@ -9,6 +9,10 @@
 #include "userinfo.h"
 #include "protected.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 static const uint8_t digits_array[] = "00123456789?????";
 
 static const uint8_t character_array[] = {
@@ -23,7 +27,7 @@ static const uint8_t character_array[] = {
 };
 
 uint8_t * userinfo_get_userid(uint8_t * buf) BANKED {
-    SWITCH_RAM(CAMERA_BANK_OWNER_DATA);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_OWNER_DATA);
     strcpy(buf, "GB-");
     uint8_t *dest = buf + 3;
     for (uint8_t i = 0, *src = &cam_owner_data.user_info.user_id; i != 4; i++, src++) {
@@ -35,7 +39,7 @@ uint8_t * userinfo_get_userid(uint8_t * buf) BANKED {
 }
 
 uint8_t * userinfo_get_username(uint8_t * buf) BANKED {
-    SWITCH_RAM(CAMERA_BANK_OWNER_DATA);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_OWNER_DATA);
     uint8_t *dest = buf;
     for (uint8_t i = 0, *src = cam_owner_data.user_info.user_name; i != sizeof(cam_owner_data.user_info.user_name); i++, src++) {
         *dest++ = ((*src < 0x50) || (*src > 0xdf)) ? ' ' : character_array[(*src - 0x50)];
@@ -45,7 +49,7 @@ uint8_t * userinfo_get_username(uint8_t * buf) BANKED {
 }
 
 uint8_t * userinfo_get_birthdate(uint8_t * buf) BANKED {
-    SWITCH_RAM(CAMERA_BANK_OWNER_DATA);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_OWNER_DATA);
     if (cam_owner_data.user_info.datepart1) {
         buf[0]  = digits_array[(cam_owner_data.user_info.datepart1 >> 4) & 0x0f];
         buf[1]  = digits_array[(cam_owner_data.user_info.datepart1 & 0x0f)];
@@ -67,6 +71,6 @@ uint8_t * userinfo_get_birthdate(uint8_t * buf) BANKED {
 }
 
 uint8_t userinfo_get_gender(void) BANKED {
-    SWITCH_RAM(CAMERA_BANK_OWNER_DATA);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_OWNER_DATA);
     return ((cam_owner_data.user_info.gender_blood & 0x03) != 0x03) ? cam_owner_data.user_info.gender_blood & 0x03 : 0;
 }

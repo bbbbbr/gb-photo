@@ -14,6 +14,7 @@
         SCRN_VX_B = 32          ; Virtual width of screen in bytes
         SCRN_VY_B = 32          ; Virtual height of screen in bytes
 
+        rROMB0_LOCAL = 0x2000   ; $2000->$2fff
 
         .area _CRASH_HEADER(ABS)
 
@@ -33,7 +34,7 @@
 
 ___HandleCrash::
         push    hl
-        ld      hl, #rROMB0
+        ld      hl, #rROMB0_LOCAL
         ld      (hl), #b___HandleCrash_banked
         pop     hl
         jp      ___HandleCrash_banked 

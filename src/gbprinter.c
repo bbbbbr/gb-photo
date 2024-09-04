@@ -14,6 +14,10 @@
 
 #include "state_camera.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 #define REINIT_SEIKO
 
 #define START_TRANSFER 0x81
@@ -131,7 +135,7 @@ uint8_t gbprinter_print_image(const uint8_t * image, uint8_t image_bank, const f
 
     if ((rows >> 1) == 0) return PRN_STATUS_OK;
 
-    SWITCH_RAM(image_bank & 0x0f);
+    SWITCH_RAM_FORCE_MBC3(image_bank & 0x0f);
     img = image;
 
     const uint8_t * map = current_frame.map;

@@ -16,7 +16,7 @@ PNG2ASSET = $(GBDK_HOME)bin/png2asset
 # They can also be built/cleaned individually: "make gg" and "make gg-clean"
 # Possible are: gb gbc pocket sms gg
 #TARGETS = gb gbc pocket sms gg
-TARGETS = gb gbc
+TARGETS = gb gbc duck
 #TARGETS = gbc
 
 LIBRARIES = -Wl-llib/$(PORT)/hUGEDriver.lib
@@ -27,6 +27,7 @@ LCCFLAGS_pocket  = $(LIBRARIES) -Wm-ys -Wl-yt0xFC -Wm-yn"$(PROJECTNAME)"
 LCCFLAGS_gbc     = $(LIBRARIES) -Wm-ys -Wm-yc -Wl-yt0xFC -Wm-yn"$(PROJECTNAME)"
 LCCFLAGS_sms     =
 LCCFLAGS_gg      =
+LCCFLAGS_duck    = $(LIBRARIES) -Wm-ys -Wl-yt0xFC -Wm-yn"$(PROJECTNAME)"
 
 LCCFLAGS += $(LCCFLAGS_$(EXT)) -Wm-yS # This adds the current platform specific LCC Flags
 
@@ -42,7 +43,8 @@ COMMIT      = $(shell git rev-parse --short HEAD)
 CFLAGS      += -DBRANCH=$(BRANCH) -DVERSION=$(VERSION) -DCOMMIT=$(COMMIT)
 
 # Optimization
-CFLAGS      += -Wf'--max-allocs-per-node 50000'
+# CFLAGS      += -Wf'--max-allocs-per-node 50000'
+
 
 # You can set the name of the ROM file here
 PROJECTNAME = photo

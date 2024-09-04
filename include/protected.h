@@ -7,6 +7,10 @@
 
 #include "gbcamera.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 #define PROTECTED_CORRECT       0x00
 #define PROTECTED_REPAIR_ALBUM  0x01
 #define PROTECTED_REPAIR_VECTOR 0x02
@@ -19,7 +23,7 @@ extern uint8_t protected_status;
 #define PROTECTED_SEED 0xAA55u
 
 inline void protected_modify_slot(uint8_t slot, uint8_t value) {
-    SWITCH_RAM(CAMERA_BANK_LAST_SEEN);
+    SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_LAST_SEEN);
     uint8_t old = cam_image_slots.imageslots[slot];
     cam_image_slots_echo.imageslots[slot] = cam_image_slots.imageslots[slot] = value;
     cam_image_slots_echo.magic.crc_add = cam_image_slots.magic.crc_add += (value - old);

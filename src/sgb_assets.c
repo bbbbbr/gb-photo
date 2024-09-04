@@ -13,6 +13,10 @@
 #include "camera_sgb_border.h"
 #include "camera_sgb_border_default.h"
 
+#if defined(NINTENDO)
+#include "override_mbc.h"
+#endif
+
 BANKREF(module_sgb_assets)
 
 static const uint8_t sgb_palette_gray[] = {
@@ -49,7 +53,7 @@ inline void sgb_assets_set_palette(uint8_t palette_index) {
 // load the SGB borders and palettes if SGB detected
 uint8_t INIT_module_sgb_assets(void) BANKED {
     if (_is_SUPER) {
-        SWITCH_RAM(CAMERA_BANK_REGISTERS);
+        SWITCH_RAM_FORCE_MBC3(CAMERA_BANK_REGISTERS);
         if (OPTION(fancy_sgb_border)) {
             set_sgb_border(&sgb_borders[SGB_BORDER_FANCY], BANK(module_sgb_assets));
             sgb_assets_set_palette(SGB_PALETTE_RED);
